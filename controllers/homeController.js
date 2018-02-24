@@ -19,6 +19,7 @@ module.exports = {
             data.success = success;
         }
 
+        
 
         res.render('partials/index', obj);
     }

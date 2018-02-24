@@ -1,24 +1,29 @@
-pragma solidity 0.4.20;
+pragma solidity 0.4.18;
 
 contract BestMarket {
     
     address private owner;
     
     uint private registerTax;
+    uint private fee;
     ///uint private minPrice;
     
-    event RegisterEvent(address addr, uint timestamp);
-    mapping(address => bool) sellers;
-    mapping(address => bool) buyers;
+    event RegisterEvent(address addr, uint _registerTax, uint currentTime);
+    event BuyProduct(address addr, uint currentTime, uint price, string productName);
     
-    mapping(address => uint) balanceOfSellers;
+    mapping(address => bool) private sellers;
+    mapping(address => bool) private buyers;
     
-    mapping(string => address) productSeller;
-    mapping(address => uint) sellerProducts;
-    mapping(address => uint) buyerProducts;
+    uint private totalSellerBalance;
+    mapping(address => uint) private balanceOfSeller;
     
-    Product[] allProducts;
-    mapping(string => bool) productNames;
+    mapping(string => address) private productSeller;
+    //mapping(address => uint) private sellerProducts;
+    //mapping(address => uint) private buyerProducts;
+    
+    Product[] private allProducts;
+    mapping(string => Product) private productByName;
+    mapping(string => bool) private isProductExist;
     
     struct Product {
         uint price;
@@ -32,9 +37,13 @@ contract BestMarket {
         _;
     }
     
-    function BestMarket() public {
+    function BestMarket(uint _registerTax, uint _fee) public {
         owner = msg.sender;
+        //registerTax = _registerTax * 1 ether;
+        //fee = _fee; 
+        
         registerTax = 1 ether;
+        fee = 5;
         //minPrice = 1 finney;
     }
     
@@ -48,7 +57,7 @@ contract BestMarket {
     }
     
     modifier isProductNameFree(string productName) {
-        require(productNames[productName] != true);
+        require(isProductExist[productName] != true);
         _;
     }
     
@@ -59,27 +68,29 @@ contract BestMarket {
         require(sellers[msg.sender] != true);
         
         uint difference = msg.value - registerTax;
-        if(difference > 0){
+        
+        if (difference > 0) {
             msg.sender.transfer(difference);
         }
         
         sellers[msg.sender] = true;
-        RegisterEvent(msg.sender, now);
+        uint currentTime = now;
+        RegisterEvent(msg.sender, registerTax, currentTime);
     }
     
     function addProduct(uint price, string productName, string doc, string ipfsPath) public isSeller isProductNameFree(productName) returns(bool) {
         
-        uint nameLength = utfStringLength(productName);
-        uint docLength = utfStringLength(doc);
-        uint ipfsPathLength = utfStringLength(ipfsPath);
+        // uint nameLength = utfStringLength(productName);
+        // uint docLength = utfStringLength(doc);
+        // uint ipfsPathLength = utfStringLength(ipfsPath);
         
-        if(price < 1 || 
-            nameLength < 3 || nameLength > 50 ||
-            docLength > 1000 ||
-            ipfsPathLength > 100
-            ){
-            return false;
-        }
+        // if( price < 1 || 
+        //     nameLength < 3 || nameLength > 50 ||
+        //     docLength > 1000 ||
+        //     ipfsPathLength > 100
+        //     ){
+        //     return false;  
+        // }
         
         Product memory newProduct;
         newProduct.price = price * 1 finney;
@@ -87,27 +98,15 @@ contract BestMarket {
         newProduct.jsonDoc = doc;
         newProduct.ipfsPath = ipfsPath;
         
-        sellerProducts[msg.sender]++;
-        productNames[productName] = true;
+        //sellerProducts[msg.sender]++;
+        isProductExist[productName] = true;
         allProducts.push(newProduct);
         productSeller[productName] = msg.sender;
+        productByName[productName] = newProduct;
         
         return true;
     }
     
-    
-    function withdraw() public isSeller {
-        if(owner == msg.sender) {
-            require(this.balance > 0);
-            owner.transfer(this.balance);
-        }
-        else {
-            require(balanceOfSellers[msg.sender] > 0);
-            uint sellerBalance = balanceOfSellers[msg.sender];
-            balanceOfSellers[msg.sender] = 0;
-            msg.sender.transfer(sellerBalance);
-        }
-    }
     
     // BUYER section
     function registerAsBuyer() public payable {
@@ -115,21 +114,23 @@ contract BestMarket {
         require(buyers[msg.sender] != true);
         
         uint difference = msg.value - registerTax;
-        if(difference > 0){
+        if (difference > 0) {
             msg.sender.transfer(difference);
         }
         
         buyers[msg.sender] = true;
-        RegisterEvent(msg.sender, now);
+        RegisterEvent(msg.sender, registerTax, now);
     }
     
-    function buyProduct(string productName, uint productIndex) public payable returns (uint, string, string, string) {
-        require(productIndex >=0 || productIndex < allProducts.length);
+    function buyProduct(string productName) public payable returns (uint, string, string, string) {
+        //require(productIndex >= 0 || productIndex < allProducts.length);
         
-        Product storage pr = allProducts[productIndex];
-        if(productNames[pr.name] != true){
-            require(false);
-        }
+        //Product storage pr = allProducts[productIndex];
+        //require(productNames[pr.name] == true);
+        
+        require(isProductExist[productName]);
+        
+        Product storage pr = productByName[productName];
         
         require(msg.value >= pr.price);
         
@@ -138,52 +139,93 @@ contract BestMarket {
             msg.sender.transfer(difference);
         }
         
+        uint contractFee = (pr.price / 100) * fee;
+        uint amountForSeller = pr.price - contractFee;
+        
         address seller = productSeller[productName];
         
-        assert(balanceOfSellers[seller] + pr.price >= balanceOfSellers[seller]);
+        assert(balanceOfSeller[seller] + amountForSeller >= balanceOfSeller[seller]);
+        assert(totalSellerBalance + amountForSeller >= totalSellerBalance);
         
-        balanceOfSellers[seller] += pr.price;
-        buyerProducts[msg.sender]++;
+        balanceOfSeller[seller] += amountForSeller;
+        totalSellerBalance += amountForSeller;
+        
+        BuyProduct(msg.sender, now, pr.price, pr.name);
+        
+        //buyerProducts[msg.sender]++;
+        
+        return (pr.price, pr.name, pr.jsonDoc , pr.ipfsPath);
     } 
     
+    //  Withdraw
+    function sellerWithdraw() public {
+        require(sellers[msg.sender]);
+        require(balanceOfSeller[msg.sender] > 0);
+        
+        uint sellerBalance = balanceOfSeller[msg.sender];
+        balanceOfSeller[msg.sender] = 0;
+        totalSellerBalance -= sellerBalance;
+        msg.sender.transfer(sellerBalance);
+    }
+    
+    function ownerWithdraw() public isOwner {
+        
+        uint ownerBalance = this.balance - totalSellerBalance;
+        require(ownerBalance > 0);
+        owner.transfer(ownerBalance);
+    }
+    
     // view section
-    function getBalance() public view isSeller returns (uint) {
+    function getProductPriceInFinney(string productName) public view returns (uint) {
+        require(isProductExist[productName]);
+        
+        Product storage pr = productByName[productName];
+        
+        return pr.price / 1 finney;
+    }
+    
+    function getBalance() public view isOwner returns (uint) {
+        //return this.balance / 1 finney;
         if(owner == msg.sender) {
-            return this.balance;
+            return this.balance / 1 finney;
         } else {
-            return balanceOfSellers[msg.sender];
+            return balanceOfSeller[msg.sender] / 1 finney;
         }
     }
     
-    function getNumberOfProducts() public view returns (uint){
+    function getNumberOfProducts() public view returns (uint) {
         return allProducts.length;
     }
     
     function getProduct(uint index) public view returns (uint, string) {
         require(index >= 0 && index < allProducts.length);
-        return (allProducts[index].price, allProducts[index].name);
+        return (allProducts[index].price / 1 finney, allProducts[index].name);
     }
     
-    // utils
-    function utfStringLength(string str) private pure returns (uint length) {
-        uint i=0;
-        bytes memory string_rep = bytes(str);
-
-        while (i<string_rep.length)
-        {
-            if (string_rep[i]>>7==0)
-                i+=1;
-            else if (string_rep[i]>>5==0x6)
-                i+=2;
-            else if (string_rep[i]>>4==0xE)
-                i+=3;
-            else if (string_rep[i]>>3==0x1E)
-                i+=4;
-            else
-                //For safety
-                i+=1;
-
-            length++;
-        }
+    function getFee() public view returns (uint) {
+        return fee;
     }
+    
+    // // utils
+    // function utfStringLength(string str) private pure returns (uint length) {
+    //     uint i=0;
+    //     bytes memory string_rep = bytes(str);
+
+    //     while (i<string_rep.length)
+    //     {
+    //         if (string_rep[i]>>7==0)
+    //             i+=1;
+    //         else if (string_rep[i]>>5==0x6)
+    //             i+=2;
+    //         else if (string_rep[i]>>4==0xE)
+    //             i+=3;
+    //         else if (string_rep[i]>>3==0x1E)
+    //             i+=4;
+    //         else
+    //             //For safety
+    //             i+=1;
+
+    //         length++;
+    //     }
+    // }
 }
