@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>{{title}}</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.js" 
+			integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" 
+			crossorigin="anonymous">
+	</script>
+	<link href="/css/site.css" type="text/css" rel="stylesheet">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+
+	<script src="/javascripts/web3.js"></script>
+</head>
+
+<body>
+	{{{body}}}
+</body>
+
+<script>
+	window.addEventListener('load', function () {
+
+		var web3 = {};
+		//if (typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
+		//	web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
+		//} else {
+		//	web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
+		//}
+
+		if (typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
+			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+		} else {
+			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+		}
+
+		//console.log(window.web3.currentProvider);
+		console.log(web3.eth.coinbase);
+	})
+</script>
+
+</html>
