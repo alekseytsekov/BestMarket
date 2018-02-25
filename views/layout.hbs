@@ -75,8 +75,8 @@
 
 <script>
 	let contract = {};
-	const contractAddress = '0xf25186b5081ff5ce73482ad761db0eb0d25abfbf';
 	const creator = '0x627306090abab3a6e1400e9345bc60c78a8bef57';
+	const contractAddress = '0x24ff895a4b554e5673ff5bf050d0597397b29fa5';
 
 	const shouldGetProducts = '{{shouldGetProducts}}';
 
@@ -460,7 +460,7 @@
 			}
 
 			productPrice = toFinney(parseFloat(productPrice));
-			console.log(productPrice);
+			//console.log(productPrice);
 			
 			let option = { 
 				from: userAddress,
@@ -479,9 +479,9 @@
 			}); 
 		}
 
+		// /get/show all products
 		if(shouldGetProducts){
 
-			console.log(' get prod');
 			getProducts();
 			function getProducts(){
 
@@ -516,6 +516,43 @@
 			}
 		}
 
+		setTimeout(setBuyEvent,500);
+
+		function setBuyEvent(){
+			$('.btn-buy-product').click(buyProduct);
+		}
+
+		function buyProduct() {
+			let name = $(this).data('productname');
+			let price = $(this).data('price');
+			
+			let userAddress = $('#userAddress').val();
+
+			if(!isAddressValid(userAddress)){
+				return;
+			}
+
+			let option = { 
+				from: userAddress,
+				value : `${web3.toWei(price, 'ether')}`,
+				gas: 1000000
+			};
+
+			console.log(name);
+			console.log(option);
+
+			contract.buyProduct(name, option, function(err,result){
+				if(err){
+					showErrorMsg(err);
+					return;
+				}
+				
+				// tx hash
+				let msg = `Successfully buy a '${name}'! Transaction hash: ${result}`;
+				showSuccessMsg(msg);
+			}); 
+		}
+
 		//utis
 
 		// add product to view
@@ -542,7 +579,7 @@
 
         <div class="col-xs-12">
             <br>
-            <button class="btn btn-primary" type="button" data-productname="${product.name}">Purchase</button>
+            <button class="btn btn-primary btn-buy-product" type="button" data-price="${product.price}" data-productname="${product.name}">Purchase</button>
         </div>
     </fieldset>
 </div>
