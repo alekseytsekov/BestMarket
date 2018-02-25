@@ -1,10 +1,11 @@
-
+let config = require('./../config/config');
 
 module.exports = {
     register : async (req, res) => {
 
         let obj = {
-            isAdmin : false,
+            contractCreator : config.development.contractCreator,
+            contractAddress : config.development.contractAddress,
         };
 
         let error = req.query.error;

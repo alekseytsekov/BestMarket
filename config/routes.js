@@ -9,9 +9,10 @@ const seller = require('./../controllers/sellerController');
 module.exports = app => {
     
     //home
-    app.get('/', home.index);
+    app.get('/', home.list);
     app.get('/buyer/register', buyer.register);
     app.get('/seller/register', seller.register);
+    app.get('/seller/addProduct', seller.addProduct);
 
     // //home
     // app.get('/', home.index);
