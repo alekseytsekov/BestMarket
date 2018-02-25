@@ -1,4 +1,4 @@
-pragma solidity 0.4.18;
+pragma solidity ^0.4.18;//new
 
 contract BestMarket {
     
@@ -185,12 +185,14 @@ contract BestMarket {
     }
     
     function getBalance() public view isOwner returns (uint) {
-        //return this.balance / 1 finney;
-        if(owner == msg.sender) {
-            return this.balance / 1 finney;
-        } else {
-            return balanceOfSeller[msg.sender] / 1 finney;
-        }
+        
+        return this.balance / 1 finney;
+    }
+    
+    function getBalanceOfSeller() public view returns (uint) {
+        require(sellers[msg.sender]);
+        uint balance = balanceOfSeller[msg.sender] / 1 finney;
+        return balance;
     }
     
     function getNumberOfProducts() public view returns (uint) {

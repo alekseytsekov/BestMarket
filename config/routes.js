@@ -3,11 +3,15 @@
 // const globals = require('./globals');
 
 const home = require('./../controllers/homeController');
+const buyer = require('./../controllers/buyerController');
+const seller = require('./../controllers/sellerController');
 
 module.exports = app => {
     
     //home
     app.get('/', home.index);
+    app.get('/buyer/register', buyer.register);
+    app.get('/seller/register', seller.register);
 
     // //home
     // app.get('/', home.index);
