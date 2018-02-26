@@ -1,12 +1,10 @@
-pragma solidity ^0.4.18;//new
-
+pragma solidity ^0.4.18;
 contract BestMarket {
     
     address private owner;
     
     uint private registerTax;
     uint private fee;
-    ///uint private minPrice;
     
     event RegisterEvent(address addr, uint _registerTax, uint currentTime);
     event BuyProduct(address addr, uint currentTime, uint price, string productName);
@@ -14,8 +12,8 @@ contract BestMarket {
     mapping(address => bool) private sellers;
     mapping(address => bool) private buyers;
     
-    uint private totalSellerBalance;
-    mapping(address => uint) private balanceOfSeller;
+    //uint private totalSellerBalance;
+    mapping(address => uint) private balanceOf;
     
     mapping(string => address) private productSeller;
     //mapping(address => uint) private sellerProducts;
@@ -78,7 +76,7 @@ contract BestMarket {
         RegisterEvent(msg.sender, registerTax, currentTime);
     }
     
-    function addProduct(uint price, string productName, string doc, string ipfsPath) public isSeller isProductNameFree(productName) returns(bool) {
+    function addProduct(uint price, string productName, string doc, string ipfsPath) public isSeller isProductNameFree(productName) {
         
         // uint nameLength = utfStringLength(productName);
         // uint docLength = utfStringLength(doc);
@@ -93,7 +91,8 @@ contract BestMarket {
         // }
         
         Product memory newProduct;
-        newProduct.price = price * 1 finney;
+        //newProduct.price = price * 1 finney;
+        newProduct.price = price;
         newProduct.name = productName;
         newProduct.jsonDoc = doc;
         newProduct.ipfsPath = ipfsPath;
@@ -103,8 +102,6 @@ contract BestMarket {
         allProducts.push(newProduct);
         productSeller[productName] = msg.sender;
         productByName[productName] = newProduct;
-        
-        return true;
     }
     
     
@@ -123,77 +120,78 @@ contract BestMarket {
     }
     
     function buyProduct(string productName) public payable returns (uint, string, string, string) {
-        //require(productIndex >= 0 || productIndex < allProducts.length);
         
-        //Product storage pr = allProducts[productIndex];
-        //require(productNames[pr.name] == true);
+        require(isProductExist[productName] == true);
+        require(msg.value >= productByName[productName].price);
         
-        require(isProductExist[productName]);
-        
-        Product storage pr = productByName[productName];
-        
-        require(msg.value >= pr.price);
-        
-        uint difference = msg.value - pr.price;
+        uint difference = msg.value - productByName[productName].price;
         if(difference > 0) {
             msg.sender.transfer(difference);
         }
         
-        uint contractFee = (pr.price / 100) * fee;
-        uint amountForSeller = pr.price - contractFee;
+        uint dealFee = (productByName[productName].price / 100) * fee;
+        uint amountForSeller = productByName[productName].price - dealFee;
         
-        address seller = productSeller[productName];
+        assert(balanceOf[owner] + dealFee >= balanceOf[owner]);
+        require(balanceOf[productSeller[productName]] + amountForSeller >= balanceOf[productSeller[productName]]);
         
-        assert(balanceOfSeller[seller] + amountForSeller >= balanceOfSeller[seller]);
-        assert(totalSellerBalance + amountForSeller >= totalSellerBalance);
+        balanceOf[owner] += dealFee;
+        balanceOf[productSeller[productName]] += amountForSeller;
         
-        balanceOfSeller[seller] += amountForSeller;
-        totalSellerBalance += amountForSeller;
+        //require(totalSellerBalance + amountForSeller >= totalSellerBalance);
+        //totalSellerBalance += amountForSeller;
         
-        BuyProduct(msg.sender, now, pr.price, pr.name);
+        BuyProduct(msg.sender, now, productByName[productName].price, productByName[productName].name);
         
-        //buyerProducts[msg.sender]++;
-        
-        return (pr.price, pr.name, pr.jsonDoc , pr.ipfsPath);
+        return (productByName[productName].price, productByName[productName].name, productByName[productName].jsonDoc , productByName[productName].ipfsPath);
     } 
     
     //  Withdraw
-    function sellerWithdraw() public {
-        require(sellers[msg.sender]);
-        require(balanceOfSeller[msg.sender] > 0);
+    function withdraw(uint amount) public isSeller {
+        require(amount > 0 && balanceOf[msg.sender] >= amount);
         
-        uint sellerBalance = balanceOfSeller[msg.sender];
-        balanceOfSeller[msg.sender] = 0;
-        totalSellerBalance -= sellerBalance;
-        msg.sender.transfer(sellerBalance);
+        balanceOf[msg.sender] -= amount;
+        
+        uint temp = amount;
+        amount = 0;
+        
+        msg.sender.transfer(temp);
     }
     
-    function ownerWithdraw() public isOwner {
+    // function sellerWithdraw() public {
+    //     require(sellers[msg.sender]);
+    //     require(balanceOfSeller[msg.sender] > 0);
         
-        uint ownerBalance = this.balance - totalSellerBalance;
-        require(ownerBalance > 0);
-        owner.transfer(ownerBalance);
-    }
+    //     uint sellerBalance = balanceOfSeller[msg.sender];
+    //     balanceOfSeller[msg.sender] = 0;
+    //     totalSellerBalance -= sellerBalance;
+    //     msg.sender.transfer(sellerBalance);
+    // }
+    
+    // function ownerWithdraw() public isOwner {
+        
+    //     uint ownerBalance = this.balance - totalSellerBalance;
+    //     require(ownerBalance > 0);
+    //     owner.transfer(ownerBalance);
+    // }
     
     // view section
-    function getProductPriceInFinney(string productName) public view returns (uint) {
+    function getProductPrice(string productName) public view returns (uint) {
         require(isProductExist[productName]);
         
-        Product storage pr = productByName[productName];
-        
-        return pr.price / 1 finney;
+        return productByName[productName].price;
     }
     
-    function getBalance() public view isOwner returns (uint) {
+    function getBalance() public view isSeller returns (uint) {
         
-        return this.balance / 1 finney;
+        return balanceOf[msg.sender];
     }
     
-    function getBalanceOfSeller() public view returns (uint) {
-        require(sellers[msg.sender]);
-        uint balance = balanceOfSeller[msg.sender] / 1 finney;
-        return balance;
-    }
+    // function getBalanceOfSeller() public view returns (uint) {
+    //     require(sellers[msg.sender]);
+    //     uint balance = balanceOfSeller[msg.sender];
+    //     return balance;
+    // }
     
     function getNumberOfProducts() public view returns (uint) {
         return allProducts.length;
@@ -201,7 +199,7 @@ contract BestMarket {
     
     function getProduct(uint index) public view returns (uint, string) {
         require(index >= 0 && index < allProducts.length);
-        return (allProducts[index].price / 1 finney, allProducts[index].name);
+        return (allProducts[index].price, allProducts[index].name);
     }
     
     function getFee() public view returns (uint) {
