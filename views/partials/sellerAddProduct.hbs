@@ -38,10 +38,30 @@
         <div class="col-xs-12">
             <label for="productResource" class="form">Resource</label>
         </div>
-        <input class="form-control" id="productResource" type="file">
-        <br>
 
-        <button id="btn-seller-add" type="button" class="btn btn-success">Add</button>
+        <div class="row">
+            <input type="hidden" id="ipfs-address" value="">
+            <div class="col-xs-10">
+                <input class="form-control" id="productResource" type="file">
+            </div>
+            <div class="col-xs-2">
+                <button id="btn-upload" class="btn btn-default" type="button">Upload</button>
+                <br>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <br>
+                <button id="btn-seller-add" type="button" class="btn btn-success">Add</button>
+            </div>
+        </div>
+
+        <div class="col-xs-12">
+            <br>
+            <img id="output">
+        </div>
+        
     </div>
 
 </div>

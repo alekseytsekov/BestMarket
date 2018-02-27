@@ -24,9 +24,26 @@ module.exports = {
     addProduct : async (req, res) => {
 
         let obj = {
-            isAdmin : false,
+            contractCreator : config.development.contractCreator,
+            contractAddress : config.development.contractAddress,
         };
 
         res.render('partials/sellerAddProduct', obj);
+    },
+    checkBalance : async (req, res) => {
+        let obj = {
+            contractCreator : config.development.contractCreator,
+            contractAddress : config.development.contractAddress,
+        };
+
+        res.render('partials/sellerCheckBalance', obj);
+    },
+    withdraw : async (req, res) => {
+        let obj = {
+            contractCreator : config.development.contractCreator,
+            contractAddress : config.development.contractAddress,
+        };
+
+        res.render('partials/withdraw', obj);
     }
 };
