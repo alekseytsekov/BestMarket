@@ -18,6 +18,12 @@
 
 <body>
 
+	<div id="getMetaMask" class="row hide-me">
+		<div class="col-xs-12 text-center msg info-msg">
+			<span>Please install </span><a target="_blank" href="https://metamask.io/">MetaMask</a>
+		</div>
+	</div>
+
 	<div class="row">
 
 		<div class="col-xs-2">
@@ -358,32 +364,24 @@
 	//let web3 = {};
 	window.addEventListener('load', function () {
 
-		
+		let hasMetamask = false;
 
-			//var web3 = {};
-			//if (typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
-			//	web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
-			//} else {
-			//	web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
-			//}
-		if (typeof web3 !== 'undefined') {
-			//console.log(web3.currentProvider);
-			//App.web3Provider = web3.currentProvider;
+		if (typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
+			
 			web3 = new Web3(web3.currentProvider);
-		} else if (typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
-			//web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
-			//App.web3Provider = web3.currentProvider;
-			web3 = new Web3(web3.currentProvider);
+			contract = web3.eth.contract(contractAbi).at(contractAddress);
+			hasMetamask = true;
 		} else {
-			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+			//web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
+			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 		}
 
-		//console.log(8880)
-		//console.log(BigNumber);
-
-		//web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
-		contract = web3.eth.contract(contractAbi).at(contractAddress);
-
+		if(!hasMetamask) {
+			$('#getMetaMask').removeClass('hide-me');
+			$('#getMetaMask').show();
+			return;
+		}
+		
 		// ******************   Buyer *****************
 		$('#btn-buyer-register').click(buyerRegister);
 		function buyerRegister(){
@@ -501,9 +499,8 @@
 
 					$('#ipfs-address').val(result[0].hash);
 					let url = `https://ipfs.io/ipfs/${result[0].hash}`
-					//document.getElementById("url").innerHTML= url
-					//document.getElementById("url").href= url
-					document.getElementById("output").src = url;
+					
+					//document.getElementById("output").src = url;
 				});
 			}
 			const photo = document.getElementById("productResource");

@@ -1,0 +1,17 @@
+{
+  "name": "best-market-unit-test",
+  "version": "1.0.0",
+  "description": "unit tests",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Al Ts",
+  "license": "MIT",
+  "dependencies": {
+    "zeppelin-solidity": "1.7.0"
+  }
+}

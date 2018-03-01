@@ -23,6 +23,12 @@ button a {
 	cursor: pointer;
 }
 
+.info-msg {
+	color: orange;
+	background-color: black;
+
+}
+
 .error-msg {
 	color: white;
 	background-color: red;
