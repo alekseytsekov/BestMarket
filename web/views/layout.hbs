@@ -107,8 +107,11 @@
 
 <script>
 	let contract = {};
-	const creator = '0x627306090abab3a6e1400e9345bc60c78a8bef57';
-	const contractAddress = '0xf12b5dd4ead5f743c6baa640b0216200e89b60da';
+	//const creator = '0x627306090abab3a6e1400e9345bc60c78a8bef57';
+	//const contractAddress = '0xf12b5dd4ead5f743c6baa640b0216200e89b60da';
+
+	const creator = '0x5a4324cDA6e642D03f1eFA1De1992F0239c5F448';
+	const contractAddress = '0x5188Ed190aEeca8AFE0da738Da6a6fAf7119667B'; // deployed
 
 	const shouldGetProducts = '{{shouldGetProducts}}';
 
@@ -398,8 +401,8 @@
 			web3 = new Web3(web3.currentProvider);
 			hasMetaMask = true;
 		} else {
-			//web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
-			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+			web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
+			//web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 		}
 
 		contract = web3.eth.contract(contractAbi).at(contractAddress);
@@ -521,7 +524,7 @@
 
 			let option = {
 				from: userAddress,
-				gas: 1000000
+				gas: 3000000
 			};
 
 			contract.addProduct(productPrice, productName, productDesc, ipfsPath, option, function (err, result) {
@@ -592,6 +595,7 @@
 						return;
 					}
 
+					//console.log(result);
 					let numberOfProducts = JSON.parse(result);
 
 
