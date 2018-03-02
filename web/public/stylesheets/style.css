@@ -43,3 +43,13 @@ button a {
 	width: 100%;
 	max-width: 100%;
 }
+
+.wrapper-product-view {
+	margin:5px; 
+	padding:10px; 
+	border:1px solid gray; 
+	border-radius: 5px;
+
+	height: 45rem;
+	max-height: 45rem;
+}

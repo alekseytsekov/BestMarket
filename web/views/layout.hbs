@@ -24,6 +24,15 @@
 		</div>
 	</div>
 
+	<div class="row text-center">
+		<div class="col-xs-12">
+			<h1>Best Market</h1>
+		</div>
+		<div class="col-xs-12">
+			<h3>Buy and Sell most quality photos</h3>
+		</div>
+	</div>
+
 	<div class="row">
 
 		<div class="col-xs-2">
@@ -542,6 +551,7 @@
 				$('#productPrice').val('');
 				$('#productDesc').val('');
 				$('#ipfs-address').val('');
+				$('#productResource').val('');
 			});
 		}
 
@@ -774,7 +784,7 @@
     <br>
     <br>
 
-    <fieldset style="margin:5px; padding:10px; border:1px solid gray; border-radius: 5px;">
+    <fieldset class="wrapper-product-view">
         <div class="col-xs-12">
             Name:
             <b>${product.name}</b>
@@ -791,7 +801,7 @@
         </div>
 
         <div class="col-xs-12">
-            
+            <br>
 			<img class="product-img" src="https://ipfs.io/ipfs/${product.link}">
         </div>
 
