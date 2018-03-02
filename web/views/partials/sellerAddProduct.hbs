@@ -36,6 +36,13 @@
         <br>
 
         <div class="col-xs-12">
+            <label for="productDesc" class="form">Product description</label>
+        </div>
+        {{!-- <input class="form-control" id="productDesc" type="text" > --}}
+        <textarea class="form-control" id="productDesc"></textarea>
+        <br>
+
+        <div class="col-xs-12">
             <label for="productResource" class="form">Resource</label>
         </div>
 
@@ -49,6 +56,12 @@
                 <br>
             </div>
         </div>
+
+        <div class="col-xs-12">
+            <br>
+            <span id="output" class="hide-me">It's uploaded!</span>
+            {{!-- <img id="output"> --}}
+        </div>
         
         <div class="row">
             <div class="col-xs-12">
@@ -57,10 +70,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12">
-            <br>
-            <img id="output">
-        </div>
+        
         
     </div>
 

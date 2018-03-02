@@ -10,17 +10,17 @@
 	<link href="/stylesheets/style.css" type="text/css" rel="stylesheet">
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 	<script src="https://wzrd.in/standalone/buffer"></script>
-    <script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js"
-			integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
-			crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js" integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
+	    crossorigin="anonymous"></script>
 	<script src="/javascripts/web3.js"></script>
 </head>
 
 <body>
 
-	<div id="getMetaMask" class="row hide-me">
-		<div class="col-xs-12 text-center msg info-msg">
-			<span>Please install </span><a target="_blank" href="https://metamask.io/">MetaMask</a>
+	<div  class="row">
+		<div id="getMetaMask" class="col-xs-12 text-center msg info-msg hide-me">
+			<span>Please install </span>
+			<a target="_blank" href="https://metamask.io/">MetaMask</a>
 		</div>
 	</div>
 
@@ -35,7 +35,7 @@
 						<button type="button" class="btn btn-success">
 							<a href="/">Products</a>
 						</button>
-						
+
 					</div>
 
 					<div class="col-xs-12">
@@ -43,7 +43,7 @@
 						<button type="button" class="btn btn-success">
 							<a href="/seller/addProduct">Add Product</a>
 						</button>
-						
+
 					</div>
 
 					<div class="col-xs-12">
@@ -53,7 +53,7 @@
 						<button type="button" class="btn btn-info">
 							<a href="/buyer/register">Register as Buyer</a>
 						</button>
-						
+
 					</div>
 
 					<div class="col-xs-12">
@@ -61,10 +61,10 @@
 						<button type="button" class="btn btn-info">
 							<a href="/seller/register">Register as Seller</a>
 						</button>
-						
+
 					</div>
 
-					
+
 
 					<div class="col-xs-12">
 						<br>
@@ -73,7 +73,7 @@
 						<button type="button" class="btn btn-primary">
 							<a href="/seller/checkBalance">Check balance</a>
 						</button>
-						
+
 					</div>
 
 					<div class="col-xs-12">
@@ -81,7 +81,7 @@
 						<button type="button" class="btn btn-primary">
 							<a href="/seller/withdraw">Withdraw</a>
 						</button>
-						
+
 					</div>
 				</div>
 			</nav>
@@ -108,7 +108,7 @@
 <script>
 	let contract = {};
 	const creator = '0x627306090abab3a6e1400e9345bc60c78a8bef57';
-	const contractAddress = '0x8cdaf0cd259887258bc13a92c0a6da92698644c0';
+	const contractAddress = '0xf12b5dd4ead5f743c6baa640b0216200e89b60da';
 
 	const shouldGetProducts = '{{shouldGetProducts}}';
 
@@ -116,6 +116,20 @@
 	//const contractAddress = '{{contractAddress}}';
 
 	const contractAbi = [
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getNumOfBuyers",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
 	{
 		"constant": true,
 		"inputs": [],
@@ -128,83 +142,6 @@
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "registerAsSeller",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "productName",
-				"type": "string"
-			}
-		],
-		"name": "buyProduct",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"name": "",
-				"type": "string"
-			},
-			{
-				"name": "",
-				"type": "string"
-			},
-			{
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getNumberOfProducts",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "registerAsBuyer",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -243,6 +180,14 @@
 			{
 				"name": "",
 				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
 			}
 		],
 		"payable": false,
@@ -250,35 +195,23 @@
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
+		"constant": true,
+		"inputs": [],
+		"name": "getOwner",
+		"outputs": [
 			{
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"name": "productName",
-				"type": "string"
-			},
-			{
-				"name": "doc",
-				"type": "string"
-			},
-			{
-				"name": "ipfsPath",
-				"type": "string"
+				"name": "",
+				"type": "address"
 			}
 		],
-		"name": "addProduct",
-		"outputs": [],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "getFee",
+		"name": "getNumberOfProducts",
 		"outputs": [
 			{
 				"name": "",
@@ -290,46 +223,18 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"constant": true,
+		"inputs": [],
+		"name": "getNumOfSellers",
+		"outputs": [
 			{
-				"name": "_registerTax",
-				"type": "uint256"
-			},
-			{
-				"name": "_fee",
+				"name": "",
 				"type": "uint256"
 			}
 		],
 		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "fallback"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "addr",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "_registerTax",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "currentTime",
-				"type": "uint256"
-			}
-		],
-		"name": "RegisterEvent",
-		"type": "event"
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -357,150 +262,312 @@
 		],
 		"name": "BuyProduct",
 		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "addr",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "_registerTax",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "currentTime",
+				"type": "uint256"
+			}
+		],
+		"name": "RegisterEvent",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"name": "productName",
+				"type": "string"
+			},
+			{
+				"name": "_decription",
+				"type": "string"
+			},
+			{
+				"name": "ipfsPath",
+				"type": "string"
+			}
+		],
+		"name": "addProduct",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "productName",
+				"type": "string"
+			}
+		],
+		"name": "buyProduct",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "fallback"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "registerAsBuyer",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "registerAsSeller",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
 	}
 ]
 
-	
+
 	//let web3 = {};
 	window.addEventListener('load', function () {
 
-		let hasMetamask = false;
+		let hasMetaMask = false;
 
 		if (typeof window.web3 !== "undefined" && typeof window.web3.currentProvider !== "undefined") {
-			
+
 			web3 = new Web3(web3.currentProvider);
-			contract = web3.eth.contract(contractAbi).at(contractAddress);
-			hasMetamask = true;
+			hasMetaMask = true;
 		} else {
 			//web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/ri45PYMaMiRFCfZh2H5a"));
-			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 		}
 
-		if(!hasMetamask) {
+		contract = web3.eth.contract(contractAbi).at(contractAddress);
+
+		if (!hasMetaMask) {
+			showMetaMask();
+		}
+
+		function showMetaMask() {
 			$('#getMetaMask').removeClass('hide-me');
 			$('#getMetaMask').show();
-			return;
 		}
-		
+
 		// ******************   Buyer *****************
 		$('#btn-buyer-register').click(buyerRegister);
-		function buyerRegister(){
+
+		function buyerRegister() {
+
+			if (!hasMetaMask) {
+				showMetaMask();
+				return;
+			}
+
 			let userAddress = $('#userAddress').val();
 
-			if(!isAddressValid(userAddress)){
+			if (!isAddressValid(userAddress)) {
 				return;
 			}
 
 			let options = {
-				from: userAddress, 
-				value: '1000000000000000000', 
+				from: userAddress,
+				value: '1000000000000000000',
 				gas: 1000000
 			};
 
-			contract.registerAsBuyer(options, function(err,result){
-				if(err){
+			contract.registerAsBuyer(options, function (err, result) {
+				if (err) {
 					showErrorMsg(err);
 					return;
 				}
-				
+
 				// tx hash
-				let msg = `Successfully register like Buyer! Transaction hash: ${result}`;
+				let msg =
+					`Successfully register as Buyer! Transaction hash: <a target="_blank" href="https://ropsten.etherscan.io/tx/${result}">${result}</a>`;
 				showSuccessMsg(msg);
 			});
 		};
 
 		// ******************   Seller  *****************
-		$('#btn-seller-register').click(sellerRegister);	
-		function sellerRegister(){
+		$('#btn-seller-register').click(sellerRegister);
+
+		function sellerRegister() {
+
+			if (!hasMetaMask) {
+				showMetaMask();
+				return;
+			}
 
 			let userAddress = $('#userAddress').val();
 
-			if(!isAddressValid(userAddress)){
+			if (!isAddressValid(userAddress)) {
 				return;
 			}
-			
-			let option = { 
-				from: userAddress, 
-				value: '1000000000000000000', 
+
+			let option = {
+				from: userAddress,
+				value: '1000000000000000000',
 				gas: 1000000
 			};
 
-			contract.registerAsSeller(option, function(err,result) {
-				if(err){
+			contract.registerAsSeller(option, function (err, result) {
+				if (err) {
 					showErrorMsg(err);
 					return;
 				}
-				
+
 				// tx hash
-				let msg = `Successfully register like Seller! Transaction hash: ${result}`;
+				let msg =
+					`Successfully register as Seller! Transaction hash: <a target="_blank" href="https://ropsten.etherscan.io/tx/${result}">${result}</a>`;
 				showSuccessMsg(msg);
 			});
 		}
 
 		$('#btn-seller-add').click(sellerAddProduct);
+
 		function sellerAddProduct() {
+
+			if (!hasMetaMask) {
+				showMetaMask();
+				return;
+			}
+
 			let userAddress = $('#userAddress').val();
 
-			if(!isAddressValid(userAddress)){
+			if (!isAddressValid(userAddress)) {
 				return;
 			}
 
 			let productName = $('#productName').val();
 			let productPrice = $('#productPrice').val();
+			let productDesc = $('#productDesc').val();
 			let ipfsPath = $('#ipfs-address').val();
 
-			if(productName.length < 3 || productName.length > 50 ||
+			//console.log('desc: ' +productDesc);
+
+			if (productName.length < 3 || productName.length > 50 ||
 				productName === '' || productName === 'undefined') {
 				showErrorMsg('Invalid product name!');
 				return;
 			}
 
-			if(!isValidPrice) {
+			if (!isValidPrice) {
 				showErrorMsg('Invalid price!');
 				return;
 			}
 
 			//productPrice = toFinney(parseFloat(productPrice));
 			productPrice = web3.toWei(productPrice, 'ether');
-			
-			let option = { 
+
+			let option = {
 				from: userAddress,
 				gas: 1000000
 			};
 
-			contract.addProduct(productPrice, productName, ' ', ipfsPath, option, function(err,result){
-				if(err){
+			contract.addProduct(productPrice, productName, productDesc, ipfsPath, option, function (err, result) {
+				if (err) {
 					showErrorMsg(err);
 					return;
 				}
-				
+
 				// tx hash
-				let msg = `Successfully add a product! Transaction hash: <a target="_blank" href="https://ropsten.etherscan.io/tx/${result}">${result}</a>`;
+				let msg =
+					`Successfully add a product! Transaction hash: <a target="_blank" href="https://ropsten.etherscan.io/tx/${result}">${result}</a>`;
 				showSuccessMsg(msg);
 
 				$('#productName').val('');
 				$('#productPrice').val('');
-			}); 
+				$('#productDesc').val('');
+				$('#ipfs-address').val('');
+			});
 		}
 
 		$('#btn-upload').click(upload);
-		function upload(){
+
+		function upload() {
+
+			if (!hasMetaMask) {
+				showMetaMask();
+				return;
+			}
 
 			const reader = new FileReader();
-			reader.onloadend = function() {
+			reader.onloadend = function () {
 
 				const ipfs = IpfsApi('localhost', 5001); // Connect to IPFS
 				const buf = buffer.Buffer(reader.result); // Convert data into buffer
 				ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
-					if(err) {
+					if (err) {
 						console.error(err);
 						return;
 					}
 
 					$('#ipfs-address').val(result[0].hash);
 					let url = `https://ipfs.io/ipfs/${result[0].hash}`
-					
+
 					//document.getElementById("output").src = url;
+					$('#output').removeClass('hide-me');
+					$('#output').show();
 				});
 			}
 			const photo = document.getElementById("productResource");
@@ -508,104 +575,124 @@
 		}
 
 		// /get/show all products
-		if(shouldGetProducts){
+		if (shouldGetProducts) {
 
 			getProducts();
-			function getProducts(){
 
-				let option = { 
-				from: creator,
-				gas: 1000000
+			function getProducts() {
+
+				let option = {
+					from: creator,
+					gas: 1000000
 				};
 
-				contract.getNumberOfProducts( option, function(err,result){
-				if(err){
-					showErrorMsg(err);
-					return;
-				}
-				
-				let numberOfProducts = JSON.parse(result);
-				
+				contract.getNumberOfProducts(option, function (err, result) {
+					if (err) {
+						showErrorMsg(err);
+						return;
+					}
 
-				for(let i = 0; i < numberOfProducts; i++) {
-					contract.getProduct(i, option, function(e,r){
-						if(e){
-							showErrorMsg(r);
-							return;
-						}
+					let numberOfProducts = JSON.parse(result);
 
-						let name = r[1];
-						let price = web3.fromWei(JSON.parse(r[0]), 'ether');
 
-						addProductToView({name, price, link: 'none'});
-					});
-				}
-			}); 
+
+					for (let i = 0; i < numberOfProducts; i++) {
+						contract.getProduct(i, option, function (e, r) {
+							if (e) {
+								showErrorMsg(r);
+								return;
+							}
+
+							//console.log(r);
+
+							let name = r[1];
+							let price = web3.fromWei(JSON.parse(r[0]), 'ether');
+							let description = r[2];
+							let ipfsLink = r[3];
+
+							addProductToView({
+								name,
+								price,
+								description,
+								link: ipfsLink
+							});
+						});
+					}
+				});
 			}
 		}
 
-		setTimeout(setBuyEvent,500);
+		setTimeout(setBuyEvent, 500);
 
-		function setBuyEvent(){
+		function setBuyEvent() {
 			$('.btn-buy-product').click(buyProduct);
 		}
 
 		function buyProduct() {
-			let name = $(this).data('productname');
-			let price = $(this).data('price');
-			
-			let userAddress = $('#userAddress').val();
 
-			if(!isAddressValid(userAddress)){
+			if (!hasMetaMask) {
+				showMetaMask();
 				return;
 			}
 
-			let option = { 
+			let name = $(this).data('productname');
+			let price = $(this).data('price');
+
+			let userAddress = $('#userAddress').val();
+
+			if (!isAddressValid(userAddress)) {
+				return;
+			}
+
+			let option = {
 				from: userAddress,
-				value : `${web3.toWei(price, 'ether')}`,
+				value: `${web3.toWei(price, 'ether')}`,
 				gas: 1000000
 			};
 
 			//console.log(name);
 			//console.log(option);
 
-			contract.buyProduct(name, option, function(err,result){
-				if(err){
+			contract.buyProduct(name, option, function (err, result) {
+				if (err) {
 					showErrorMsg(err);
 					return;
 				}
 
-				console.log('addr ' + result);
-				
+				//console.log('addr ' + result);
+
 				// tx hash
-				let msg = `Successfully buy a '${name}'! Transaction hash: ${result}`;
+
+				let msg =
+					`Successfully buy a product '${name}'! Transaction hash: <a target="_blank" href="https://ropsten.etherscan.io/tx/${result}">${result}</a>`;
 				showSuccessMsg(msg);
-			}); 
+			});
 		}
 
 		$('#btn-check-balance').click(checkBalance);
-		function checkBalance(context, callback){
-			
+
+		function checkBalance(context, callback) {
+
 			let userAddress = $('#userAddress').val();
 
-			if(!isAddressValid(userAddress)){
+			if (!isAddressValid(userAddress)) {
 				return;
 			}
-			
-			let option = { 
-				from: userAddress, 
+
+			let option = {
+				from: userAddress,
 				gas: 1000000
 			};
 
-			contract.getBalance(option, function(err,result) {
-				if(err){
+			contract.getBalance(option, function (err, result) {
+				if (err) {
 					showErrorMsg("Error! Maybe this address is not register as a 'Seller'!");
 					return;
 				}
-				
+
 				let balance = web3.fromWei(JSON.parse(result), 'ether');
 
-				if(callback){
+				if (callback) {
 					return callback(balance);
 				}
 
@@ -616,29 +703,37 @@
 		}
 
 		$('#btn-withdraw').click(withdraw);
+
 		function withdraw() {
+
+			if (!hasMetaMask) {
+				showMetaMask();
+				return;
+			}
+
 			let userAddress = $('#userAddress').val();
 
-			if(!isAddressValid(userAddress)){
+			if (!isAddressValid(userAddress)) {
 				return;
 			}
 
 			let withdrawAmount = $('#withdrawAmount').val();
 
-			if(isNaN(withdrawAmount) || !isFinite(withdrawAmount) || 
-				withdrawAmount === '' || withdrawAmount === 'undefined'){
+			if (isNaN(withdrawAmount) || !isFinite(withdrawAmount) ||
+				withdrawAmount === '' || withdrawAmount === 'undefined') {
 
 				showErrorMsg("Invalid input! Input should be a number!");
 				return;
 			}
 
 			checkBalance(null, getBalanceAndContinue)
-			function getBalanceAndContinue(sellerBalance){
+
+			function getBalanceAndContinue(sellerBalance) {
 
 				let difference = sellerBalance - parseFloat(withdrawAmount)
 				let canWithdraw = difference >= 0;
-				
-				if(!canWithdraw){
+
+				if (!canWithdraw) {
 
 					showErrorMsg(`Your current balance is: ${sellerBalance} ethers.`);
 					showErrorMsg(`Amount you wish to withdraw is :${parseFloat(withdrawAmount)} ethers.`);
@@ -648,19 +743,19 @@
 
 				let amountAsWei = web3.toWei(withdrawAmount, 'ether');
 
-				let option = { 
-					from: userAddress, 
+				let option = {
+					from: userAddress,
 					gas: 1000000
 				};
 
-				contract.withdraw(amountAsWei, option, function(err,result) {
-					if(err){
+				contract.withdraw(amountAsWei, option, function (err, result) {
+					if (err) {
 						showErrorMsg(err);
 						return;
 					}
-					
+
 					showSuccessMsg(`${withdrawAmount} ethers successfully withdrawn! Remaining balance of ${difference} ethers!`);
-					
+
 					$('#withdrawAmount').val('');
 				});
 			}
@@ -669,8 +764,9 @@
 		//utis
 
 		// add product to view
-		function addProductToView(product){
-			let productView = ` <div class="col-xs-4">
+		function addProductToView(product) {
+			let productView =
+				` <div class="col-xs-4">
     <br>
     <br>
 
@@ -685,9 +781,14 @@
             <b>${product.price}</b> ether
         </div>
 
+		<div class="col-xs-12">
+            Description:
+            <textarea class="form-control" readonly>${product.description}</textarea>
+        </div>
+
         <div class="col-xs-12">
-            Link to IPFS:
-            <a class="btn btn-sm btn-default" href="https://ipfs.io/ipfs/${product.link}">Click</a>
+            
+			<img class="product-img" src="https://ipfs.io/ipfs/${product.link}">
         </div>
 
         <div class="col-xs-12">
@@ -699,19 +800,19 @@
 
 
 </div>`;
-			
+
 			$('#product-wrapper').append(productView);
 		}
 
 		// address validator
-		function isAddressValid(address){
+		function isAddressValid(address) {
 
-			if(address.indexOf('0x') !== 0){
+			if (address.indexOf('0x') !== 0) {
 				showErrorMsg('Invalid address!');
 				return false;
 			}
 
-			if(address.length !== 42){
+			if (address.length !== 42) {
 				showErrorMsg('Invalid address length!');
 				return false;;
 			}
@@ -721,17 +822,17 @@
 
 		function isValidPrice(price) {
 
-			if(isNaN(price)){
+			if (isNaN(price)) {
 				return false;
 			}
 
-			if(price === '' || price === 'undefined'){
+			if (price === '' || price === 'undefined') {
 				return false;
 			}
 
 			let number = parseFloat(price);
 
-			if(number < 0){
+			if (number < 0) {
 				return false;
 			}
 
@@ -744,14 +845,14 @@
 			let indexOfDecimal = number.toString().indexOf('.');
 
 			let weiLength = 18;
-			
-			if(indexOfDecimal < 1){
+
+			if (indexOfDecimal < 1) {
 				return number + '0'.repeat(weiLength);
 			}
 
 			let exponent = length - indexOfDecimal - 1;
 
-			if(indexOfDecimal < 1){
+			if (indexOfDecimal < 1) {
 				multiplier = 1;
 			}
 
@@ -765,7 +866,8 @@
 
 		// messages
 		$('.msg').click(onMsgClick);
-		function onMsgClick(){
+
+		function onMsgClick() {
 			$(this).hide();
 		}
 

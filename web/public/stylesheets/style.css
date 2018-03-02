@@ -38,3 +38,8 @@ button a {
 	color: white;
 	background-color: rgba(42, 250, 23, 0.596);
 }
+
+.product-img {
+	width: 100%;
+	max-width: 100%;
+}

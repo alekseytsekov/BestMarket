@@ -28,7 +28,7 @@ contract BestMarket {
     struct Product {
         uint price;
         string name;
-        string jsonDoc;
+        string description;
         string ipfsPath;
     }
     
@@ -90,12 +90,12 @@ contract BestMarket {
         numOfSellers++;
     }
     
-    function addProduct(uint price, string productName, string doc, string ipfsPath) public isSeller isProductNameFree(productName) {
+    function addProduct(uint price, string productName, string _decription, string ipfsPath) public isSeller isProductNameFree(productName) {
         
         Product memory newProduct;
         newProduct.price = price;
         newProduct.name = productName;
-        newProduct.jsonDoc = doc;
+        newProduct.description = _decription;
         newProduct.ipfsPath = ipfsPath;
         
         //sellerProducts[msg.sender]++;
@@ -146,7 +146,7 @@ contract BestMarket {
         
         BuyProduct(msg.sender, now, productByName[productName].price, productByName[productName].name);
         
-        return (productByName[productName].price, productByName[productName].name, productByName[productName].jsonDoc , productByName[productName].ipfsPath);
+        return (productByName[productName].price, productByName[productName].name, productByName[productName].description , productByName[productName].ipfsPath);
     } 
     
     //  Withdraw
@@ -177,9 +177,9 @@ contract BestMarket {
         return allProducts.length;
     }
     
-    function getProduct(uint index) public view returns (uint, string) {
+    function getProduct(uint index) public view returns (uint, string, string, string) {
         require(index >= 0 && index < allProducts.length);
-        return (allProducts[index].price, allProducts[index].name);
+        return (allProducts[index].price, allProducts[index].name, allProducts[index].description  , allProducts[index].ipfsPath);
     }
     
     // function getFee() public view returns (uint) {
