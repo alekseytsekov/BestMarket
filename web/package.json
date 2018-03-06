@@ -12,6 +12,8 @@
     "express": "~4.15.5",
     "express-hbs": "1.0.4",
     "hbs": "~4.0.1",
+    "ipfs-api": "^18.1.1",
+    "ipfs-js": "0.0.11",
     "morgan": "~1.9.0",
     "serve-favicon": "~2.4.5",
     "web3": "1.0.0-beta.30"

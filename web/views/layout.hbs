@@ -9,10 +9,12 @@
 	</script>
 	<link href="/stylesheets/style.css" type="text/css" rel="stylesheet">
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
 	<script src="https://wzrd.in/standalone/buffer"></script>
 	<script src="https://unpkg.com/ipfs-api@9.0.0/dist/index.js" integrity="sha384-5bXRcW9kyxxnSMbOoHzraqa7Z0PQWIao+cgeg327zit1hz5LZCEbIMx/LWKPReuB"
 	    crossorigin="anonymous"></script>
-	<script src="/javascripts/web3.js"></script>
+
+	{{!-- <script src="/javascripts/web3.js"></script> --}}
 </head>
 
 <body>
@@ -416,6 +418,18 @@
 
 		contract = web3.eth.contract(contractAbi).at(contractAddress);
 
+
+		web3.eth.getAccounts(function(err, res){
+			if(err){
+				console.log(err);
+				return;
+			} 
+
+			$('#userAddress').prop('readonly', true);
+			$('#userAddress').val(res[0]);
+			//console.log(res[0])
+		})
+
 		if (!hasMetaMask) {
 			showMetaMask();
 		}
@@ -556,7 +570,6 @@
 		}
 
 		$('#btn-upload').click(upload);
-
 		function upload() {
 
 			if (!hasMetaMask) {
@@ -567,21 +580,50 @@
 			const reader = new FileReader();
 			reader.onloadend = function () {
 
-				const ipfs = IpfsApi('localhost', 5001); // Connect to IPFS
+				//const ipfs = IpfsApi('77.71.61.85', 5001); // Connect to IPFS
 				const buf = buffer.Buffer(reader.result); // Convert data into buffer
-				ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
-					if (err) {
-						console.error(err);
-						return;
+				//console.log(reader);
+
+				//console.log('************************ buffer *************************');
+				
+				let data = {
+					buffer : buf
+				}
+
+				$.ajax({
+					url: '/ipfs/upload',
+					type: 'POST',
+					//processData: false,
+					//contentType: false,
+					contentType: 'application/json',
+					//contentType: 'application/octet-stream',  
+					data: JSON.stringify(data),
+					//data : formData,
+					success : function(res) {
+						console.log('now its work');
+						console.log(res);
+						$('#ipfs-address').val(res);
+						let url = `https://ipfs.io/ipfs/${res}`;
+						console.log(url);
+					},
+					error : function(e) {
+						console.log(e);
 					}
-
-					$('#ipfs-address').val(result[0].hash);
-					let url = `https://ipfs.io/ipfs/${result[0].hash}`
-
-					//document.getElementById("output").src = url;
-					$('#output').removeClass('hide-me');
-					$('#output').show();
 				});
+
+				//return;
+				//ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
+				//	if (err) {
+				//		console.error(err);
+				//		return;
+				//	}
+
+				//	$('#ipfs-address').val(result[0].hash);
+				//	let url = `https://ipfs.io/ipfs/${result[0].hash}`
+
+				//	$('#output').removeClass('hide-me');
+				//	$('#output').show();
+				//});
 			}
 			const photo = document.getElementById("productResource");
 			reader.readAsArrayBuffer(photo.files[0]); // Read Provided File

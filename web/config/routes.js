@@ -5,6 +5,7 @@
 const home = require('./../controllers/homeController');
 const buyer = require('./../controllers/buyerController');
 const seller = require('./../controllers/sellerController');
+const ipfs = require('./../controllers/ipfsController');
 
 module.exports = app => {
     
@@ -15,6 +16,7 @@ module.exports = app => {
     app.get('/seller/addProduct', seller.addProduct);
     app.get('/seller/checkBalance', seller.checkBalance);
     app.get('/seller/withdraw', seller.withdraw);
+    app.post('/ipfs/upload', ipfs.upload);
 
     // app.get('/..../add', auth.isInRole(globals.roles.admin), xxx.get.add);
 

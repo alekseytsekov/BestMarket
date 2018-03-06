@@ -1,5 +1,6 @@
 //let Web3 = require('Web3');
 const config = require('./../config/config');
+const fs = require("fs");
 
 module.exports = {
     index : async (req, res) => {
